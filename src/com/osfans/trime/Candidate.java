@@ -23,7 +23,6 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ColorDrawable;
-
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -32,6 +31,9 @@ import android.widget.LinearLayout;
 import android.util.Log;
 import android.util.TypedValue;
 import android.graphics.Typeface;
+import android.text.*;
+import android.text.style.*;
+import android.graphics.Color;
 
 import java.io.File;
 import java.util.Map;
@@ -102,13 +104,13 @@ public class Candidate extends View {
 
   public Candidate(Context context, AttributeSet attrs) {
     super(context, attrs);
-    paintCandidate = new Paint();
+    paintCandidate = new TextPaint();
     paintCandidate.setAntiAlias(true);
     paintCandidate.setStrokeWidth(0);
-    paintSymbol = new Paint();
+    paintSymbol = new TextPaint();
     paintSymbol.setAntiAlias(true);
     paintSymbol.setStrokeWidth(0);
-    paintComment = new Paint();
+    paintComment = new TextPaint();
     paintComment.setAntiAlias(true);
     paintComment.setStrokeWidth(0);
 
@@ -188,6 +190,16 @@ public class Candidate extends View {
       paint.setTypeface(font);
       canvas.drawText(s, x, y, paint);
     }
+    Spannable wordtoSpan = (Spannable)Html.fromHtml("<big>I</big> <font color=red><b>know</b></font> just how to whisper, And I know just how to cry,I know just where to find the answers");
+    Editable.Factory fac = Editable.Factory.getInstance();
+    Editable edit = fac.newEditable(wordtoSpan);
+    DynamicLayout layout = new DynamicLayout(edit, (TextPaint)paint, getWidth(), Layout.Alignment.ALIGN_NORMAL, 1, 0, false);
+    edit.clear();
+    edit.append("1."+s);
+    canvas.save();
+    canvas.translate(x, y);
+    layout.draw(canvas);
+    canvas.restore();
   }
 
   private void drawCandidates(Canvas canvas) {
