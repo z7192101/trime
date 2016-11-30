@@ -456,4 +456,42 @@ public class Config {
     if (getInlinePreedit() == 0 && wp == WinPos.RIGHT) wp = WinPos.LEFT;
     return wp;
   }
+
+  public static void dumpLog() {
+
+    OutputStream out = null;
+    try {
+
+      byte[] buffer = new byte[BLK_SIZE];
+      int read;
+      while ((read = in.read(buffer)) != -1) {
+          out.write(buffer, 0, read);
+      }
+      in.close();
+      in = null;
+      out.flush();
+      out.close();
+      out = null;
+    } catch (Exception e) {
+      Log.e("Config", e.getMessage());
+      return false;
+    }
+    
+    String line = "";
+    try {
+      Process process = Runtime.getRuntime().exec("logcat -d");
+      BufferedReader bufferedReader = new BufferedReader(
+      new InputStreamReader(process.getInputStream()));
+
+      String newFileName = SDCARD + "rime.log";
+      out = new FileOutputStream(newFileName);
+      
+      StringBuilder log=new StringBuilder();
+      while ((line = bufferedReader.readLine()) != null) {
+        log.append(line);
+      }
+    } catch (IOException e) {
+    }
+    return line;
+  }
 }
